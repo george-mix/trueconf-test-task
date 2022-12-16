@@ -5,5 +5,6 @@ import { pinia } from "@/store/store";
 
 const app = createApp(App);
 
+// eslint-disable-next-line
 app.use(pinia);
 app.mount("#app");
