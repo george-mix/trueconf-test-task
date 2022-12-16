@@ -1,12 +1,29 @@
 <template>
   <label class="label">
-    <span class="text">1</span>
-    <input type="checkbox" class="checkbox-old" />
+    <span class="text">{{ floorId }}</span>
+    <input
+      type="checkbox"
+      class="checkbox-old"
+      :checked="!!floor?.isWaitingElevator"
+      :disabled="!!floor?.isWaitingElevator || !!floor?.hasElevator"
+      @change.prevent="callElevator(floorId)"
+    />
     <span class="checkbox-new"></span>
   </label>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { computed } from "vue";
+import { useFloorStore } from "@/store/floor";
+
+const props = defineProps<{ floorId: number }>();
+
+const { callElevator, getFloorById } = useFloorStore();
+
+const floor = computed(() => {
+  return getFloorById(props.floorId);
+});
+</script>
 
 <style scoped>
 .checkbox-old {

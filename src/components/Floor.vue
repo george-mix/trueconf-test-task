@@ -1,12 +1,14 @@
 <template>
   <div class="floor">
-    <CallElevatorButton />
+    <CallElevatorButton :floor-id="floorId" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { appConfig } from "@/app.config";
 import CallElevatorButton from "./CallElevatorButton.vue";
+
+defineProps<{ floorId: number }>();
 
 const floorHeight = `${appConfig.floorHeight}px`;
 </script>

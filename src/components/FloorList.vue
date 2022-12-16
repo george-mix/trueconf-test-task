@@ -1,6 +1,6 @@
 <template>
   <div class="floor-list">
-    <Floor v-for="floor in floors" :key="floor.id" />
+    <Floor v-for="floor in floors" :key="floor.id" :floor-id="floor.id" />
   </div>
 </template>
 
