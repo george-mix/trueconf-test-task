@@ -1,6 +1,6 @@
 <template>
   <div class="building">
-    <Shaft v-for="elevator in mockData.elevators" :key="elevator.id" />
+    <Shaft v-for="elevator in elevators" :key="elevator.id" />
     <FloorList />
   </div>
 </template>
@@ -8,7 +8,10 @@
 <script setup lang="ts">
 import Shaft from "./Shaft.vue";
 import FloorList from "./FloorList.vue";
-import { mockData } from "@/app.config";
+import { useElevatorStore } from "@/store/elevator";
+import { storeToRefs } from "pinia";
+
+const { elevators } = storeToRefs(useElevatorStore());
 </script>
 
 <style scoped>

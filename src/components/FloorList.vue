@@ -1,12 +1,15 @@
 <template>
   <div class="floor-list">
-    <Floor v-for="floor in mockData.floors" :key="floor.id" />
+    <Floor v-for="floor in floors" :key="floor.id" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { useFloorStore } from "@/store/floor";
 import Floor from "./Floor.vue";
-import { mockData } from "@/app.config";
+
+const { floors } = storeToRefs(useFloorStore());
 </script>
 
 <style scoped>
