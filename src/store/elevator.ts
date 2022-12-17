@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { Elevator, ElevatorId, FloorId } from "@/helpers/types";
 import { appConfig } from "@/app.config";
 import { useFloorStore } from "./floor";
+import { sortDescendingTwoNumbers } from "@/helpers/mathUtils";
 
 interface ElevatorState {
   elevators: Elevator[];
@@ -36,9 +37,19 @@ export const useElevatorStore = defineStore({
       const idleElevators = state.elevators.filter(
         (elevator) => elevator.status === "idle"
       );
+
       const closestElevators = idleElevators.sort((a, b) => {
-        return a.currentFloor - floor - (b.currentFloor - floor);
+        const [biggerNumberFirst, smallerNumberFirst] =
+          sortDescendingTwoNumbers(floor, a.currentFloor);
+        const firstDistance = biggerNumberFirst - smallerNumberFirst;
+
+        const [biggerNumberSecond, smallerNumberSecond] =
+          sortDescendingTwoNumbers(floor, b.currentFloor);
+        const secondDistance = biggerNumberSecond - smallerNumberSecond;
+
+        return firstDistance - secondDistance;
       });
+
       return closestElevators[0];
     },
 

@@ -1,6 +1,7 @@
 import { computed, ComputedRef } from "vue";
 import { Elevator } from "@/helpers/types";
 import { appConfig } from "@/app.config";
+import { sortDescendingTwoNumbers } from "@/helpers/mathUtils";
 
 export const useElevatorTransition = (elevator: ComputedRef<Elevator>) => {
   const destinationFloor = computed(() => {
@@ -12,14 +13,12 @@ export const useElevatorTransition = (elevator: ComputedRef<Elevator>) => {
   });
 
   const transitionTime = computed(() => {
-    const [biggerFloor, smallerFloor] =
-      currentFloor.value > destinationFloor.value
-        ? [currentFloor, destinationFloor]
-        : [destinationFloor, currentFloor];
+    const [biggerFloor, smallerFloor] = sortDescendingTwoNumbers(
+      currentFloor.value,
+      destinationFloor.value
+    );
 
-    return `${
-      (biggerFloor.value - smallerFloor.value) / appConfig.speedCoefficient
-    }s`;
+    return `${(biggerFloor - smallerFloor) / appConfig.speedCoefficient}s`;
   });
 
   const transitionDestination = computed(
