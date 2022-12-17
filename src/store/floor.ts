@@ -28,6 +28,9 @@ export const useFloorStore = defineStore({
     getFloorById: (state) => (floorId: number) => {
       return state.floors.find((floor) => floor.id === floorId);
     },
+    getFloorQuantity: (state) => {
+      return state.floors.length;
+    },
   },
   actions: {
     callElevator(floorId: number) {

@@ -13,6 +13,7 @@ import { Icon } from "@iconify/vue";
 
 const elevatorWidth = `${appConfig.elevatorWidth}px`;
 const elevatorHeight = `${appConfig.floorHeight}px`;
+const pauseLength = `${appConfig.waitTime}`;
 </script>
 
 <style scoped>
@@ -26,7 +27,7 @@ const elevatorHeight = `${appConfig.floorHeight}px`;
 
 .pause {
   opacity: 1;
-  animation: fade 1s 3 linear;
+  animation: fade 1s v-bind(pauseLength) linear;
 }
 
 @keyframes fade {

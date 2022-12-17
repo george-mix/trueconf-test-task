@@ -6,14 +6,13 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { storeToRefs } from "pinia";
 import { useFloorStore } from "@/store/floor";
 import { appConfig } from "@/app.config";
 import Elevator from "./Elevator.vue";
 
-const { floors } = storeToRefs(useFloorStore());
+const { getFloorQuantity } = useFloorStore();
 const shaftHeight = computed(() => {
-  const height = floors.value.length * appConfig.floorHeight;
+  const height = getFloorQuantity * appConfig.floorHeight;
   return `${height}px`;
 });
 const shaftWidth = `${appConfig.elevatorWidth}px`;
