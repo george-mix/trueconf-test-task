@@ -8,15 +8,16 @@
       :disabled="!!floor?.isWaitingElevator || !!floor?.hasElevator"
       @change.prevent="callElevator(floorId)"
     />
-    <span class="checkbox-new"></span>
+    <span class="checkbox-custom"></span>
   </label>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 import { useFloorStore } from "@/store/floor";
+import { FloorId } from "@/helpers/types";
 
-const props = defineProps<{ floorId: number }>();
+const props = defineProps<{ floorId: FloorId }>();
 
 const { callElevator, getFloorById } = useFloorStore();
 
@@ -26,11 +27,15 @@ const floor = computed(() => {
 </script>
 
 <style scoped>
+.label {
+  cursor: pointer;
+}
+
 .checkbox-old {
   display: none;
 }
 
-.checkbox-new {
+.checkbox-custom {
   position: relative;
   display: block;
   width: 20px;
@@ -39,7 +44,7 @@ const floor = computed(() => {
   transition: 0.1s;
 }
 
-.checkbox-new::before {
+.checkbox-custom::before {
   position: absolute;
   content: "";
   display: block;
@@ -53,11 +58,11 @@ const floor = computed(() => {
   transition: 0.2s;
 }
 
-.checkbox-old:checked + .checkbox-new::before {
+.checkbox-old:checked + .checkbox-custom::before {
   background-color: var(--secondary);
   border: none;
 }
-.checkbox-old:checked + .checkbox-new {
+.checkbox-old:checked + .checkbox-custom {
   border: 2px solid var(--secondary);
 }
 </style>

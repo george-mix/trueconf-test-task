@@ -25,7 +25,7 @@ import { useElevatorStatus } from "./useElevatorStatus";
 const props = defineProps<{ elevatorId: number }>();
 const elevator = computed(() => getElevatorById(props.elevatorId));
 
-const { getElevatorById, changeStatusToIdle, changePauseProperty } =
+const { getElevatorById, changeStatusToIdle, changePauseFlag } =
   useElevatorStore();
 const { setElevatorArrived } = useFloorStore();
 const {
@@ -42,11 +42,11 @@ const pauseLength = `${appConfig.waitTime}`;
 
 const onArriveToDestination = () => {
   setElevatorArrived(destinationFloor.value);
-  changePauseProperty(elevator.value.id, true);
+  changePauseFlag(elevator.value.id, true);
 };
 
 const onPauseEnd = () => {
-  changePauseProperty(elevator.value.id, false);
+  changePauseFlag(elevator.value.id, false);
   changeStatusToIdle(elevator.value.id);
 };
 </script>

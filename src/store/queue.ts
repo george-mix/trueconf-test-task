@@ -1,11 +1,11 @@
 import { ref, watch } from "vue";
 import { defineStore } from "pinia";
+import { FloorId } from "@/helpers/types";
 import { useElevatorStore } from "./elevator";
 
 export const useQueueStore = defineStore("queue", () => {
   const elevatorStore = useElevatorStore();
-
-  const queue = ref<number[]>([]);
+  const queue = ref<FloorId[]>([]);
 
   watch([() => queue.value.length, () => elevatorStore.getIddleLength], () => {
     if (queue.value.length > 0 && elevatorStore.getIddleLength > 0) {
@@ -13,7 +13,7 @@ export const useQueueStore = defineStore("queue", () => {
     }
   });
 
-  const pushFloorIdToQueue = (floorId: number) => {
+  const pushFloorIdToQueue = (floorId: FloorId) => {
     queue.value.push(floorId);
   };
 

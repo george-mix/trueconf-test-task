@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Elevator } from "@/helpers/types";
+import { Elevator, ElevatorId, FloorId } from "@/helpers/types";
 import { appConfig } from "@/app.config";
 import { useFloorStore } from "./floor";
 
@@ -32,7 +32,7 @@ export const useElevatorStore = defineStore({
         .length;
     },
 
-    getClosestElevator: (state) => (floor: number) => {
+    getClosestElevator: (state) => (floor: FloorId) => {
       const idleElevators = state.elevators.filter(
         (elevator) => elevator.status === "idle"
       );
@@ -42,19 +42,19 @@ export const useElevatorStore = defineStore({
       return closestElevators[0];
     },
 
-    getElevatorById: (state) => (id: number) => {
+    getElevatorById: (state) => (id: ElevatorId) => {
       const elevator = state.elevators.find((elevator) => elevator.id === id);
       return elevator || ({} as Elevator);
     },
 
-    getElevatorIndexById: (state) => (id: number) => {
+    getElevatorIndexById: (state) => (id: ElevatorId) => {
       const elevatorIndex = state.elevators.findIndex(
         (elevator) => elevator.id === id
       );
       return elevatorIndex;
     },
 
-    getElevatorQuantityByFloor: (state) => (floorId: number) => {
+    getElevatorQuantityByFloor: (state) => (floorId: FloorId) => {
       const floorQuantity = state.elevators.reduce(
         (acc, elevator) =>
           acc +
@@ -67,7 +67,7 @@ export const useElevatorStore = defineStore({
     },
   },
   actions: {
-    changeDestinationFloor(destinationFloor: number) {
+    changeDestinationFloor(destinationFloor: FloorId) {
       const floorStore = useFloorStore();
       const elevator = this.getClosestElevator(destinationFloor);
 
@@ -82,7 +82,7 @@ export const useElevatorStore = defineStore({
       this.elevators[index].destinationFloor = destinationFloor;
     },
 
-    changeStatusToIdle(elevatorId: number) {
+    changeStatusToIdle(elevatorId: ElevatorId) {
       const elevator = this.getElevatorById(elevatorId);
       const elevatorIndex = this.getElevatorIndexById(elevatorId);
 
@@ -90,7 +90,7 @@ export const useElevatorStore = defineStore({
       this.elevators[elevatorIndex].status = "idle";
     },
 
-    changePauseFlag(elevatorId: number, value: boolean) {
+    changePauseFlag(elevatorId: ElevatorId, value: Elevator["isOnPause"]) {
       const elevatorIndex = this.getElevatorIndexById(elevatorId);
       this.elevators[elevatorIndex].isOnPause = value;
     },

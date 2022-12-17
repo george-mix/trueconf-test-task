@@ -4,11 +4,11 @@ import { appConfig } from "@/app.config";
 
 export const useElevatorTransition = (elevator: ComputedRef<Elevator>) => {
   const destinationFloor = computed(() => {
-    return elevator.value?.destinationFloor || -1;
+    return elevator.value.destinationFloor || -1;
   });
 
   const currentFloor = computed(() => {
-    return elevator.value?.currentFloor || -1;
+    return elevator.value.currentFloor || -1;
   });
 
   const transitionTime = computed(() => {

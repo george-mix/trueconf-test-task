@@ -6,9 +6,10 @@
 
 <script setup lang="ts">
 import { appConfig } from "@/app.config";
+import { FloorId } from "@/helpers/types";
 import CallElevatorButton from "./CallElevatorButton.vue";
 
-defineProps<{ floorId: number }>();
+defineProps<{ floorId: FloorId }>();
 
 const floorHeight = `${appConfig.floorHeight}px`;
 </script>

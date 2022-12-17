@@ -10,10 +10,10 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { useElevatorStore } from "@/store/elevator";
 import Shaft from "./Shaft.vue";
 import FloorList from "./FloorList.vue";
-import { useElevatorStore } from "@/store/elevator";
-import { storeToRefs } from "pinia";
 
 const { elevators } = storeToRefs(useElevatorStore());
 </script>

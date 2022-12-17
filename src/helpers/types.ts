@@ -11,3 +11,7 @@ export interface Floor {
   isWaitingElevator: boolean;
   hasElevator: boolean;
 }
+
+export type FloorId = Floor["id"];
+
+export type ElevatorId = Elevator["id"];

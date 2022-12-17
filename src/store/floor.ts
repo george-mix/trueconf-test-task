@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Floor } from "@/helpers/types";
+import { Floor, FloorId } from "@/helpers/types";
 import { appConfig } from "@/app.config";
 import { useQueueStore } from "./queue";
 
@@ -25,21 +25,25 @@ export const useFloorStore = defineStore({
     floors: populateFloorList(),
   }),
   getters: {
-    getFloorById: (state) => (floorId: number) => {
-      return state.floors.find((floor) => floor.id === floorId);
+    getFloorById: (state) => (floorId: FloorId) => {
+      return (
+        state.floors.find((floor) => floor.id === floorId) || ({} as Floor)
+      );
     },
-    getFloorIndexById: (state) => (floorId: number) => {
+
+    getFloorIndexById: (state) => (floorId: FloorId) => {
       const floorIndex = state.floors.findIndex(
         (floor) => floor.id === floorId
       );
       return floorIndex;
     },
+
     getFloorQuantity: (state) => {
       return state.floors.length;
     },
   },
   actions: {
-    callElevator(floorId: number) {
+    callElevator(floorId: FloorId) {
       const { pushFloorIdToQueue } = useQueueStore();
       const floor = this.getFloorById(floorId);
 
@@ -48,6 +52,7 @@ export const useFloorStore = defineStore({
         pushFloorIdToQueue(floor.id);
       }
     },
+
     setFloorPropertiesById<T extends keyof Floor>(
       floorId: number,
       property: T,
@@ -58,10 +63,12 @@ export const useFloorStore = defineStore({
         this.floors[floorIndex][property] = value;
       }
     },
-    setFloorHasElevatorToFalse(floorId: number) {
+
+    setFloorHasElevatorToFalse(floorId: FloorId) {
       this.setFloorPropertiesById(floorId, "hasElevator", false);
     },
-    setElevatorArrived(floorId: number) {
+
+    setElevatorArrived(floorId: FloorId) {
       this.setFloorPropertiesById(floorId, "hasElevator", true);
       this.setFloorPropertiesById(floorId, "isWaitingElevator", false);
     },

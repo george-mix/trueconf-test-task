@@ -8,9 +8,10 @@
 import { computed } from "vue";
 import { useFloorStore } from "@/store/floor";
 import { appConfig } from "@/app.config";
+import { ElevatorId } from "@/helpers/types";
 import Elevator from "./Elevator/Elevator.vue";
 
-defineProps<{ elevatorId: number }>();
+defineProps<{ elevatorId: ElevatorId }>();
 
 const { getFloorQuantity } = useFloorStore();
 const shaftHeight = computed(() => {
