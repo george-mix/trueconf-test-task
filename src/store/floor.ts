@@ -39,5 +39,18 @@ export const useFloorStore = defineStore({
         pushFloorIdToQueue(floor.id);
       }
     },
+    setFloorPropertiesById<T extends keyof Floor>(
+      floorId: number,
+      property: T,
+      value: Floor[T]
+    ) {
+      const floor = this.getFloorById(floorId);
+      if (floor) {
+        floor[property] = value;
+      }
+    },
+    setFloorHasElevatorToFalse(floorId: number) {
+      this.setFloorPropertiesById(floorId, "hasElevator", false);
+    },
   },
 });
