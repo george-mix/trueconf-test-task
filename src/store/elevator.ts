@@ -34,6 +34,7 @@ export const useElevatorStore = defineStore({
       const idleElevators = state.elevators.filter(
         (elevator) => elevator.status === "idle"
       );
+
       const closestElevators = idleElevators.sort((a, b) => {
         return a.currentFloor - floor - (b.currentFloor - floor);
       });
@@ -41,21 +42,49 @@ export const useElevatorStore = defineStore({
       return closestElevators[0];
     },
     getElevatorById: (state) => (id: number) => {
-      const test = state.elevators.find((elevator) => elevator.id === id);
-      return test;
+      const elevator = state.elevators.find((elevator) => elevator.id === id);
+      return elevator || ({} as Elevator);
+    },
+    getElevatorIndexById: (state) => (id: number) => {
+      const elevatorIndex = state.elevators.findIndex(
+        (elevator) => elevator.id === id
+      );
+      return elevatorIndex;
+    },
+    getElevatorQuantityByFloor: (state) => (floorId: number) => {
+      const floorQuantity = state.elevators.reduce(
+        (acc, elevator) =>
+          acc +
+          (elevator.currentFloor === floorId && elevator.status === "idle"
+            ? 1
+            : 0),
+        0
+      );
+      return floorQuantity;
     },
   },
   actions: {
     changeDestinationFloor(destinationFloor: number) {
       const floorStore = useFloorStore();
-
       const elevator = this.getClosestElevator(destinationFloor);
-      const isDestinationFloorHeigher =
-        destinationFloor > elevator.currentFloor;
 
-      elevator.status = isDestinationFloorHeigher ? "up" : "down";
-      elevator.destinationFloor = destinationFloor;
-      floorStore.setFloorHasElevatorToFalse(elevator.currentFloor);
+      if (this.getElevatorQuantityByFloor(elevator.currentFloor) === 1) {
+        floorStore.setFloorHasElevatorToFalse(elevator.currentFloor);
+      }
+
+      const index = this.getElevatorIndexById(elevator.id);
+      const isGoingUp = destinationFloor > elevator.currentFloor;
+
+      this.elevators[index].status = isGoingUp ? "up" : "down";
+      this.elevators[index].destinationFloor = destinationFloor;
+    },
+    changeStatusToIdle(elevatorId: number) {
+      const elevator = this.getElevatorById(elevatorId);
+      const elevatorIndex = this.getElevatorIndexById(elevatorId);
+
+      this.elevators[elevatorIndex].currentFloor =
+        elevator?.destinationFloor || 1;
+      this.elevators[elevatorIndex].status = "idle";
     },
   },
 });

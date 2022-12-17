@@ -1,6 +1,6 @@
 <template>
   <div class="shaft">
-    <Elevator />
+    <Elevator :elevator-id="elevatorId" />
   </div>
 </template>
 
@@ -8,7 +8,9 @@
 import { computed } from "vue";
 import { useFloorStore } from "@/store/floor";
 import { appConfig } from "@/app.config";
-import Elevator from "./Elevator.vue";
+import Elevator from "./Elevator/Elevator.vue";
+
+defineProps<{ elevatorId: number }>();
 
 const { getFloorQuantity } = useFloorStore();
 const shaftHeight = computed(() => {

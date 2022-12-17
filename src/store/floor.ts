@@ -28,6 +28,12 @@ export const useFloorStore = defineStore({
     getFloorById: (state) => (floorId: number) => {
       return state.floors.find((floor) => floor.id === floorId);
     },
+    getFloorIndexById: (state) => (floorId: number) => {
+      const floorIndex = state.floors.findIndex(
+        (floor) => floor.id === floorId
+      );
+      return floorIndex;
+    },
     getFloorQuantity: (state) => {
       return state.floors.length;
     },
@@ -47,13 +53,17 @@ export const useFloorStore = defineStore({
       property: T,
       value: Floor[T]
     ) {
-      const floor = this.getFloorById(floorId);
-      if (floor) {
-        floor[property] = value;
+      const floorIndex = this.getFloorIndexById(floorId);
+      if (floorIndex >= 0) {
+        this.floors[floorIndex][property] = value;
       }
     },
     setFloorHasElevatorToFalse(floorId: number) {
       this.setFloorPropertiesById(floorId, "hasElevator", false);
+    },
+    setElevatorArrived(floorId: number) {
+      this.setFloorPropertiesById(floorId, "hasElevator", true);
+      this.setFloorPropertiesById(floorId, "isWaitingElevator", false);
     },
   },
 });

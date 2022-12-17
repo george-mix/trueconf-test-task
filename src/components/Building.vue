@@ -1,6 +1,10 @@
 <template>
   <div class="building">
-    <Shaft v-for="elevator in elevators" :key="elevator.id" />
+    <Shaft
+      v-for="elevator in elevators"
+      :key="elevator.id"
+      :elevator-id="elevator.id"
+    />
     <FloorList />
   </div>
 </template>
