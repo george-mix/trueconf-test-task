@@ -1,12 +1,14 @@
 <template>
   <div
     class="elevator"
-    :class="{ move: isUp || isDown }"
-    @transitionend="onArrivedToDestination"
+    :class="{ move: isUp || isDown, pause: elevator.isOnPause }"
+    @transitionend="onArriveToDestination"
+    @animationend="onPauseEnd"
   >
-    <div class="status">
-      <Icon icon="mdi:arrow-top" class="icon" />
-      <span class="floor-label">2</span>
+    <div v-if="!isIdle" class="status">
+      <Icon v-if="isUp" icon="mdi:arrow-top" class="icon" />
+      <Icon v-if="isDown" icon="mdi:arrow-down" class="icon" />
+      <span class="floor-label">{{ destinationFloor }}</span>
     </div>
   </div>
 </template>
@@ -18,11 +20,13 @@ import { appConfig } from "@/app.config";
 import { useElevatorStore } from "@/store/elevator";
 import { useFloorStore } from "@/store/floor";
 import { useElevatorTransition } from "./useElevatorTransition";
+import { useElevatorStatus } from "./useElevatorStatus";
 
 const props = defineProps<{ elevatorId: number }>();
 const elevator = computed(() => getElevatorById(props.elevatorId));
 
-const { getElevatorById, changeStatusToIdle } = useElevatorStore();
+const { getElevatorById, changeStatusToIdle, changePauseProperty } =
+  useElevatorStore();
 const { setElevatorArrived } = useFloorStore();
 const {
   destinationFloor,
@@ -30,22 +34,20 @@ const {
   initialPlace,
   transitionDestination,
 } = useElevatorTransition(elevator);
+const { isDown, isUp, isIdle } = useElevatorStatus(elevator);
 
 const elevatorWidth = `${appConfig.elevatorWidth}px`;
 const elevatorHeight = `${appConfig.floorHeight}px`;
 const pauseLength = `${appConfig.waitTime}`;
 
-const isUp = computed(() => {
-  return elevator?.value?.status === "up";
-});
-
-const isDown = computed(() => {
-  return elevator?.value?.status === "down";
-});
-
-const onArrivedToDestination = () => {
-  changeStatusToIdle(elevator.value.id);
+const onArriveToDestination = () => {
   setElevatorArrived(destinationFloor.value);
+  changePauseProperty(elevator.value.id, true);
+};
+
+const onPauseEnd = () => {
+  changePauseProperty(elevator.value.id, false);
+  changeStatusToIdle(elevator.value.id);
 };
 </script>
 

@@ -1,7 +1,8 @@
 export interface Elevator {
   id: number;
   currentFloor: number;
-  status: "idle" | "up" | "down" | "pause";
+  status: "idle" | "up" | "down";
+  isOnPause: boolean;
   destinationFloor: number;
 }
 

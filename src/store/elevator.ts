@@ -15,6 +15,7 @@ const populateElevatorList = () => {
       currentFloor: 1,
       destinationFloor: 1,
       status: "idle",
+      isOnPause: false,
     });
   }
   return elevatorList;
@@ -30,27 +31,29 @@ export const useElevatorStore = defineStore({
       return state.elevators.filter((elevator) => elevator.status === "idle")
         .length;
     },
+
     getClosestElevator: (state) => (floor: number) => {
       const idleElevators = state.elevators.filter(
         (elevator) => elevator.status === "idle"
       );
-
       const closestElevators = idleElevators.sort((a, b) => {
         return a.currentFloor - floor - (b.currentFloor - floor);
       });
-
       return closestElevators[0];
     },
+
     getElevatorById: (state) => (id: number) => {
       const elevator = state.elevators.find((elevator) => elevator.id === id);
       return elevator || ({} as Elevator);
     },
+
     getElevatorIndexById: (state) => (id: number) => {
       const elevatorIndex = state.elevators.findIndex(
         (elevator) => elevator.id === id
       );
       return elevatorIndex;
     },
+
     getElevatorQuantityByFloor: (state) => (floorId: number) => {
       const floorQuantity = state.elevators.reduce(
         (acc, elevator) =>
@@ -78,13 +81,18 @@ export const useElevatorStore = defineStore({
       this.elevators[index].status = isGoingUp ? "up" : "down";
       this.elevators[index].destinationFloor = destinationFloor;
     },
+
     changeStatusToIdle(elevatorId: number) {
       const elevator = this.getElevatorById(elevatorId);
       const elevatorIndex = this.getElevatorIndexById(elevatorId);
 
-      this.elevators[elevatorIndex].currentFloor =
-        elevator?.destinationFloor || 1;
+      this.elevators[elevatorIndex].currentFloor = elevator.destinationFloor;
       this.elevators[elevatorIndex].status = "idle";
+    },
+
+    changePauseFlag(elevatorId: number, value: boolean) {
+      const elevatorIndex = this.getElevatorIndexById(elevatorId);
+      this.elevators[elevatorIndex].isOnPause = value;
     },
   },
 });
