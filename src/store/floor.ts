@@ -1,28 +1,17 @@
+import { Ref } from "vue";
 import { defineStore } from "pinia";
 import { Floor, FloorId } from "@/helpers/types";
-import { appConfig } from "@/app.config";
 import { useQueueStore } from "./queue";
-
+import { useSaveToLS } from "@/helpers/useSaveToLS";
+import { populateFloorList } from "@/helpers/dataHelpers";
 interface FloorState {
-  floors: Floor[];
+  floors: Ref<Floor[]>;
 }
-
-const populateFloorList = (): Floor[] => {
-  const floorList = [];
-  for (let i = 0; i < appConfig.floorQuantity; i++) {
-    floorList.push({
-      id: i + 1,
-      isWaitingElevator: false,
-      hasElevator: i === 0 ? true : false,
-    });
-  }
-  return floorList;
-};
 
 export const useFloorStore = defineStore({
   id: "floor",
   state: (): FloorState => ({
-    floors: populateFloorList(),
+    floors: useSaveToLS("floors", []),
   }),
   getters: {
     getFloorById: (state) => (floorId: FloorId) => {
@@ -71,6 +60,10 @@ export const useFloorStore = defineStore({
     setElevatorArrived(floorId: FloorId) {
       this.setFloorPropertiesById(floorId, "hasElevator", true);
       this.setFloorPropertiesById(floorId, "isWaitingElevator", false);
+    },
+
+    populateFloorList() {
+      this.floors = populateFloorList();
     },
   },
 });

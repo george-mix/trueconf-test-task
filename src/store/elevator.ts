@@ -1,31 +1,19 @@
+import { Ref } from "vue";
 import { defineStore } from "pinia";
 import { Elevator, ElevatorId, FloorId } from "@/helpers/types";
-import { appConfig } from "@/app.config";
 import { useFloorStore } from "./floor";
 import { sortDescendingTwoNumbers } from "@/helpers/mathUtils";
+import { useSaveToLS } from "@/helpers/useSaveToLS";
+import { populateElevatorList } from "@/helpers/dataHelpers";
 
 interface ElevatorState {
-  elevators: Elevator[];
+  elevators: Ref<Elevator[]>;
 }
-
-const populateElevatorList = () => {
-  const elevatorList: Elevator[] = [];
-  for (let i = 0; i < appConfig.shaftQuantity; i++) {
-    elevatorList.push({
-      id: i + 1,
-      currentFloor: 1,
-      destinationFloor: 1,
-      status: "idle",
-      isOnPause: false,
-    });
-  }
-  return elevatorList;
-};
 
 export const useElevatorStore = defineStore({
   id: "elevator",
   state: (): ElevatorState => ({
-    elevators: populateElevatorList(),
+    elevators: useSaveToLS<Elevator[]>("elevators", []),
   }),
   getters: {
     getIddleLength: (state) => {
@@ -94,16 +82,26 @@ export const useElevatorStore = defineStore({
     },
 
     changeStatusToIdle(elevatorId: ElevatorId) {
+      const elevatorIndex = this.getElevatorIndexById(elevatorId);
+
+      this.elevators[elevatorIndex].status = "idle";
+    },
+
+    changeStatusToPause(elevatorId: ElevatorId) {
       const elevator = this.getElevatorById(elevatorId);
       const elevatorIndex = this.getElevatorIndexById(elevatorId);
 
+      this.changePauseFlag(elevatorId, true);
       this.elevators[elevatorIndex].currentFloor = elevator.destinationFloor;
-      this.elevators[elevatorIndex].status = "idle";
     },
 
     changePauseFlag(elevatorId: ElevatorId, value: Elevator["isOnPause"]) {
       const elevatorIndex = this.getElevatorIndexById(elevatorId);
       this.elevators[elevatorIndex].isOnPause = value;
+    },
+
+    populateElevatorList() {
+      this.elevators = populateElevatorList();
     },
   },
 });

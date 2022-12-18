@@ -1,11 +1,12 @@
-import { ref, watch } from "vue";
+import { watch } from "vue";
 import { defineStore } from "pinia";
 import { FloorId } from "@/helpers/types";
 import { useElevatorStore } from "./elevator";
+import { useSaveToLS } from "@/helpers/useSaveToLS";
 
 export const useQueueStore = defineStore("queue", () => {
   const elevatorStore = useElevatorStore();
-  const queue = ref<FloorId[]>([]);
+  const queue = useSaveToLS<FloorId[]>(`queue`, []);
 
   watch([() => queue.value.length, () => elevatorStore.getIddleLength], () => {
     if (queue.value.length > 0 && elevatorStore.getIddleLength > 0) {
@@ -18,10 +19,10 @@ export const useQueueStore = defineStore("queue", () => {
   };
 
   const startTask = () => {
-    const floor = queue.value.shift();
+    const floorId = queue.value.shift();
 
-    if (floor) {
-      elevatorStore.changeDestinationFloor(floor);
+    if (floorId) {
+      elevatorStore.changeDestinationFloor(floorId);
     }
   };
 

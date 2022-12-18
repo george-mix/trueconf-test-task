@@ -1,7 +1,7 @@
 <template>
   <div
     class="elevator"
-    :class="{ move: isUp || isDown, pause: elevator.isOnPause }"
+    :class="{ move: isMoving, pause: elevator.isOnPause }"
     @transitionend="onArriveToDestination"
     @animationend="onPauseEnd"
   >
@@ -25,8 +25,12 @@ import { useElevatorStatus } from "./useElevatorStatus";
 const props = defineProps<{ elevatorId: number }>();
 const elevator = computed(() => getElevatorById(props.elevatorId));
 
-const { getElevatorById, changeStatusToIdle, changePauseFlag } =
-  useElevatorStore();
+const {
+  getElevatorById,
+  changeStatusToIdle,
+  changePauseFlag,
+  changeStatusToPause,
+} = useElevatorStore();
 const { setElevatorArrived } = useFloorStore();
 const {
   destinationFloor,
@@ -34,7 +38,7 @@ const {
   initialPlace,
   transitionDestination,
 } = useElevatorTransition(elevator);
-const { isDown, isUp, isIdle } = useElevatorStatus(elevator);
+const { isDown, isUp, isIdle, isMoving } = useElevatorStatus(elevator);
 
 const elevatorWidth = `${appConfig.elevatorWidth}px`;
 const elevatorHeight = `${appConfig.floorHeight}px`;
@@ -42,7 +46,7 @@ const pauseLength = `${appConfig.waitTime}`;
 
 const onArriveToDestination = () => {
   setElevatorArrived(destinationFloor.value);
-  changePauseFlag(elevator.value.id, true);
+  changeStatusToPause(elevator.value.id);
 };
 
 const onPauseEnd = () => {
