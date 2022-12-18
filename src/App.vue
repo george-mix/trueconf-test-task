@@ -10,18 +10,27 @@ import Building from "./components/Building.vue";
 import { useElevatorStore } from "./store/elevator";
 import { useFloorStore } from "./store/floor";
 import { useQueueStore } from "./store/queue";
+import {
+  checkIfStateIsEmpty,
+  checkConfigMatchesPrevious,
+  removePersistedState,
+} from "@/helpers/configHelpers";
 
-// import queue to continue work after page reload
+// import queue for it to continue work after page reload
 // eslint-disable-next-line
 const queueStore = useQueueStore();
 const elevatorStore = useElevatorStore();
 const floorStore = useFloorStore();
 
 onMounted(() => {
-  if (localStorage.getItem("trueconf_elevators") === "[]") {
+  // adjusting for config changes
+  if (!checkConfigMatchesPrevious()) {
+    removePersistedState();
+  }
+  if (checkIfStateIsEmpty("elevators")) {
     elevatorStore.populateElevatorList();
   }
-  if (localStorage.getItem("trueconf_floors") === "[]") {
+  if (checkIfStateIsEmpty("floors")) {
     floorStore.populateFloorList();
   }
 });
