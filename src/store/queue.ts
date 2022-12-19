@@ -8,8 +8,8 @@ export const useQueueStore = defineStore("queue", () => {
   const elevatorStore = useElevatorStore();
   const queue = useSaveToLS<FloorId[]>(`queue`, []);
 
-  watch([() => queue.value.length, () => elevatorStore.getIddleLength], () => {
-    if (queue.value.length > 0 && elevatorStore.getIddleLength > 0) {
+  watch([() => queue.value.length, () => elevatorStore.getIdleLength], () => {
+    if (queue.value.length > 0 && elevatorStore.getIdleLength > 0) {
       startTask();
     }
   });

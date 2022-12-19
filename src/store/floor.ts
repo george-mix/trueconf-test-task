@@ -4,6 +4,7 @@ import { Floor, FloorId } from "@/helpers/types";
 import { useQueueStore } from "./queue";
 import { useSaveToLS } from "@/helpers/useSaveToLS";
 import { populateFloorList } from "@/helpers/dataHelpers";
+
 interface FloorState {
   floors: Ref<Floor[]>;
 }

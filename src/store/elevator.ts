@@ -16,7 +16,7 @@ export const useElevatorStore = defineStore({
     elevators: useSaveToLS<Elevator[]>("elevators", []),
   }),
   getters: {
-    getIddleLength: (state) => {
+    getIdleLength: (state) => {
       return state.elevators.filter((elevator) => elevator.status === "idle")
         .length;
     },
